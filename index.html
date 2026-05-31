@@ -1,0 +1,39 @@
+---
+layout: default
+title: Home
+---
+
+<section class="py-8 border-b border-gray-100">
+    <h1 class="text-4xl font-extrabold text-gray-950 tracking-tight">안녕하세요, [이름]입니다.</h1>
+    <p class="mt-6 text-lg text-gray-600 leading-relaxed max-w-3xl">
+        컴퓨터 기반의 단백질 디자인(Computational Protein Design) 및 구조 생물정보학에 관심을 두고 공부하고 있습니다. 
+        이 공간은 매주 읽는 최신 논문들을 복기하고 아카이빙하는 저만의 디지털 정원이자 포트폴리오입니다.
+    </p>
+</section>
+
+<section id="papers" class="py-12">
+    <div class="flex justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-950 tracking-tight">Paper Notes</h2>
+        <span class="text-sm text-gray-500">총 {{ site.posts | size }}편의 리뷰</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for post in site.posts %}
+        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">{{ post.date | date: "%B %d, %Y" }}</span>
+                <h3 class="text-xl font-bold text-gray-950 mt-2 hover:text-blue-600">
+                    <a href="{{ post.url }}">{{ post.title }}</a>
+                </h3>
+                <p class="text-gray-600 mt-3 text-sm leading-relaxed line-clamp-3">
+                    {{ post.excerpt | strip_html }}
+                </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+                <span>Category: {{ post.category | default: "Research" }}</span>
+                <a href="{{ post.url }}" class="font-medium text-blue-600 hover:underline">Read Note →</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
