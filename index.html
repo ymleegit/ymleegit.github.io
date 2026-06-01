@@ -40,7 +40,7 @@ title: Home
 
     <div class="slide absolute inset-0 w-full h-full flex items-center justify-center">
         <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-none">
-            <div class="viewer_3Dmoljs w-full h-full" data-pdb="7AAK" data-backgroundcolor="0x000000" data-style="cartoon:color=ss" data-spin="axis:y;speed:0.15"></div>
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="7AAK" data-backgroundcolor="0x000000" data-style="cartoon:color=spectrum" data-spin="axis:y;speed:0.15"></div>
         </div>
         <div class="slide-text relative z-50 text-center max-w-2xl px-6 py-8 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 mx-4 pointer-events-auto">
             <span class="text-xs font-bold uppercase tracking-widest text-rose-400">RCSB PDB · 7AAK</span>
@@ -84,25 +84,23 @@ title: Home
             if (window.$3Dmol) window.$3Dmol.resize();
         }, 150);
 
-        // --- 1. 초기 레이아웃 상태 정밀 빌드 ---
-        // 1번 슬라이드 활성화
+        // 초기 레이아웃 상태 설정
         gsap.set(".slide", { opacity: 0 });
         gsap.set(".slide:first-child", { opacity: 1 });
         
-        // 💡 중요: 대기 중인 2,3,4번 단백질들은 '이미 약간 확대(scale: 1.35)'된 상태로 은밀히 대기시킵니다.
-        gsap.set(".viewer-wrap", { scale: 1.35 });
+        // 💡 [확대감 상향]: 대기 중인 다음 단백질들을 기존 1.35에서 '1.7배 거대한 상태'로 대기시킵니다.
+        gsap.set(".viewer-wrap", { scale: 1.7 });
         gsap.set(".slide:first-child .viewer-wrap", { scale: 1 });
         
         // 글씨 초기 위치
         gsap.set(".slide-text", { opacity: 0, y: 30 });
         gsap.set(".slide:first-child .slide-text", { opacity: 1, y: 0 });
 
-        // --- 2. 스크롤 타임라인 매니저 기동 ---
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: "#cinema-container",
                 start: "top top",
-                end: "+=5000", // 굴리는 맛이 있는 부드러운 스크롤 길이
+                end: "+=5000", 
                 pin: true,
                 scrub: 1,
             }
@@ -110,19 +108,18 @@ title: Home
 
         // --- SCENE 1 -> SCENE 2 교차 (6XDG -> 4GXY) ---
         tl.to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          // 💡 [크로스 줌 핵심]: 1번 단백질이 커지면서 멀어질 때, 대기하던 2번 단백질이 '동시에(<)' 켜지며 축소 안착
-          .to(".slide:nth-child(1) .viewer-wrap", { scale: 1.35, duration: 0.6 }, "-=0.1")
+          // 💡 현재 단백질은 1.7배까지 시원하게 커지며 사라지고, 다음 단백질은 1.7배 크기에서 부드럽게 축소되며 들어옵니다.
+          .to(".slide:nth-child(1) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
           .to(".slide:nth-child(1)", { opacity: 0, duration: 0.6 }, "<")
           
           .to(".slide:nth-child(2)", { opacity: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1, duration: 0.6 }, "<") // 1.35 상태에서 원래 크기(1)로 줌아웃
-          // 2번 글씨 등장 및 머무름 시간
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1, duration: 0.6 }, "<") 
           .to(".slide:nth-child(2) .slide-text", { opacity: 1, y: 0, duration: 0.3 })
           .to({}, { duration: 0.5 }) 
 
         // --- SCENE 2 -> SCENE 3 교차 (4GXY -> 1A8O) ---
           .to(".slide:nth-child(2) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1.35, duration: 0.6 }, "-=0.1")
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
           .to(".slide:nth-child(2)", { opacity: 0, duration: 0.6 }, "<")
           
           .to(".slide:nth-child(3)", { opacity: 1, duration: 0.6 }, "<")
@@ -132,7 +129,7 @@ title: Home
 
         // --- SCENE 3 -> SCENE 4 교차 (1A8O -> 7AAK) ---
           .to(".slide:nth-child(3) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: 1.35, duration: 0.6 }, "-=0.1")
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
           .to(".slide:nth-child(3)", { opacity: 0, duration: 0.6 }, "<")
           
           .to(".slide:nth-child(4)", { opacity: 1, duration: 0.6 }, "<")
