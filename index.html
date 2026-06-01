@@ -90,7 +90,7 @@ title: Home
         
         // 💡 [크기 최적화]: 전체화면에서 가득 차 보이도록 베이스 크기를 1.45배로 키우고, 최대 확대는 2.2배로 밸런스 조정
         gsap.set(".viewer-wrap", { scale: 2.2 });
-        gsap.set(".slide:first-child .viewer-wrap", { scale: 1.45 });
+        gsap.set(".slide:first-child .viewer-wrap", { scale: 1.7 });
         
         // 글씨 초기 위치
         gsap.set(".slide-text", { opacity: 0, y: 30 });
@@ -101,14 +101,14 @@ title: Home
                 trigger: "#cinema-container",
                 start: "top top",
                 // 💡 [타이밍 최적화]: 머무는 체감 시간을 늘리기 위해 총 스크롤 연동 길이를 6500px로 확장
-                end: "+=6500", 
+                end: "+=7000", 
                 pin: true,
                 scrub: 1,
             }
         });
 
         // 💡 [타이밍 최적화]: 대문이 열리자마자 바로 사라지지 않고, 한참 읽을 수 있게 머무는 홀드 세팅 추가
-        tl.to({}, { duration: 1.0 }) 
+        tl.to({}, { duration: 2.0 }) 
 
         // --- SCENE 1 -> SCENE 2 교차 (6XDG -> 4GXY) ---
           .to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -40, duration: 0.4 })
