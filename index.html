@@ -3,59 +3,129 @@ layout: default
 title: Home
 ---
 
-<!-- 프로필 섹션 -->
-<section class="py-32 border-b border-gray-100 flex flex-col justify-center min-h-[60vh]">
-    <h1 class="reveal opacity-0 text-5xl font-extrabold text-gray-950 tracking-tight">안녕하세요, [이름]입니다.</h1>
-    <p class="reveal opacity-0 mt-8 text-xl text-gray-700 leading-relaxed max-w-3xl">
-        컴퓨터 기반의 단백질 디자인(Computational Protein Design) 및 구조 생물정보학에 관심을 두고 공부하고 있습니다. 
-        이 공간은 매주 읽는 최신 논문들을 복기하고 아카이빙하는 저만의 디지털 정원이자 포트폴리오입니다.
-    </p>
-</section>
+<div id="cinema-container" class="relative w-full h-screen bg-black overflow-hidden select-none">
+    
+    <div class="slide absolute inset-0 w-full h-full flex items-center justify-center z-40">
+        <div class="viewer-wrap absolute inset-0 w-full h-full origin-center">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="6XDG" data-backgroundcolor="0x000000" data-style="cartoon:color=spectrum" data-spin="axis:y;speed:0.2"></div>
+        </div>
+        <div class="slide-text relative z-10 text-center max-w-2xl px-6 py-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+            <span class="text-xs font-bold uppercase tracking-widest text-blue-400">RCSB PDB · 6XDG</span>
+            <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight mt-2 leading-tight">Computational<br>Protein Design</h1>
+            <p class="mt-4 text-base text-gray-300 leading-relaxed">AI/ML 프레임워크를 기반으로 고유한 위상을 가진 단백질 백본 생성 및 나노구조 복합체 디자인을 연구합니다.</p>
+        </div>
+    </div>
 
-<!-- 💡 대규모 업그레이드: 다크 테마 3D 단백질 시각화 섹션 -->
-<section class="py-16 bg-gray-950 rounded-3xl my-24 overflow-hidden shadow-2xl border border-gray-800">
-    <div class="max-w-5xl mx-auto px-6 text-center">
-        <h2 class="reveal opacity-0 text-3xl font-bold text-white tracking-tight mb-4">구조 기반 단백질 디자인 시각화</h2>
-        <p class="reveal opacity-0 text-gray-400 text-sm mb-12">마우스로 드래그하여 구조를 직접 돌려보거나 확대할 수 있습니다.</p>
-        
-        <!-- 3D 단백질 모델이 렌더링되는 무대 -->
-        <div class="relative w-full h-[500px] bg-gray-950 rounded-2xl overflow-hidden flex justify-center items-center">
-            <!-- 3Dmol.js 엔진 작동: 6XDG(나노케이지 구조)를 스펙트럼 만화 스타일로 자동 회전시킴 -->
-            <div style="height: 100%; width: 100%; position: relative;" 
-                 class="viewer_3Dmoljs" 
-                 data-pdb="6XDG" 
-                 data-backgroundcolor="0x0b0f19" 
-                 data-style="cartoon:color=spectrum"
-                 data-spin="axis:y;speed:0.3">
+    <div class="slide absolute inset-0 w-full h-full flex items-center justify-center z-30">
+        <div class="viewer-wrap absolute inset-0 w-full h-full origin-center">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="4GXY" data-backgroundcolor="0x000000" data-style="sphere:radius=0.6;color=elements" data-spin="axis:y;speed:0.2"></div>
+        </div>
+        <div class="slide-text relative z-10 text-center max-w-2xl px-6 py-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+            <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">RCSB PDB · 4GXY</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight mt-2 leading-tight">Multi-omics to<br>Structure AI</h2>
+            <p class="mt-4 text-base text-gray-300 leading-relaxed">유전체, 전사체 데이터를 넘어 구조 생물학 풀스택 모델을 향한 데이터 파이프라인을 빌드합니다.</p>
+        </div>
+    </div>
+
+    <div class="slide absolute inset-0 w-full h-full flex items-center justify-center z-20">
+        <div class="viewer-wrap absolute inset-0 w-full h-full origin-center">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="1A8O" data-backgroundcolor="0x000000" data-style="stick" data-spin="axis:x;speed:0.15"></div>
+        </div>
+        <div class="slide-text relative z-10 text-center max-w-2xl px-6 py-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+            <span class="text-xs font-bold uppercase tracking-widest text-amber-400">RCSB PDB · 1A8O</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight mt-2 leading-tight">Sequence<br>Optimization</h2>
+            <p class="mt-4 text-base text-gray-300 leading-relaxed">ProteinMPNN 등을 고도화하여 생성된 백본 위에 물리적으로 안정적이고 접히는 최적의 서열을 예측합니다.</p>
+        </div>
+    </div>
+
+    <div class="slide absolute inset-0 w-full h-full flex items-center justify-center z-10">
+        <div class="viewer-wrap absolute inset-0 w-full h-full origin-center">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="7AAK" data-backgroundcolor="0x000000" data-style="cartoon:color=ss" data-spin="axis:y;speed:0.2"></div>
+        </div>
+        <div class="slide-text relative z-10 text-center max-w-2xl px-6 py-8 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+            <span class="text-xs font-bold uppercase tracking-widest text-rose-400">RCSB PDB · 7AAK</span>
+            <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight mt-2 leading-tight">In-silico<br>Validation</h2>
+            <p class="mt-4 text-base text-gray-300 leading-relaxed">AlphaFold2, ColabFold 인프라를 로컬 서버에 구축하여 대규모 후보군을 정밀 스크리닝합니다.</p>
+        </div>
+    </div>
+
+</div>
+
+<section id="papers" class="py-24 bg-black border-t border-gray-900">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="flex justify-between items-center mb-12">
+            <h2 class="text-3xl font-extrabold text-white tracking-tight">Paper Notes</h2>
+            <span class="text-sm text-gray-500">총 {{ site.posts | size }}편의 아카이브</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {% for post in site.posts %}
+            <div class="p-8 bg-gray-950 border border-gray-900 rounded-2xl hover:border-gray-800 transition-all flex flex-col justify-between group">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-blue-400">{{ post.date | date: "%B %d, %Y" }}</span>
+                    <h3 class="text-xl font-bold text-white mt-3 group-hover:text-blue-400 transition-colors">
+                        <a href="{{ post.url }}">{{ post.title }}</a>
+                    </h3>
+                    <p class="text-gray-400 mt-4 text-sm leading-relaxed line-clamp-3">
+                        {{ post.excerpt | strip_html }}
+                    </p>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-900 flex justify-between items-center text-xs text-gray-500">
+                    <span>{{ post.category | default: "Research" }}</span>
+                    <a href="{{ post.url }}" class="font-medium text-blue-400 hover:underline">Read Note →</a>
+                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- 논문 리뷰 아카이브 리스트 섹션 -->
-<section id="papers" class="py-12">
-    <div class="flex justify-between items-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-950 tracking-tight">Paper Notes</h2>
-        <span class="text-sm text-gray-500">총 {{ site.posts | size }}편의 리뷰</span>
-    </div>
+<script>
+    window.addEventListener('load', () => {
+        // 1. 초기 레이아웃 상태 설정 (첫 번째 슬라이드 제외하고 모두 투명하게 가려둠)
+        gsap.set(".slide:not(:first-child)", { opacity: 0 });
+        // 첫 번째 이후의 단백질 뷰어 상자들은 엄청 확대(scale: 3)된 상태로 대기
+        gsap.set(".slide:not(:first-child) .viewer-wrap", { scale: 3 });
+        gsap.set(".slide:not(:first-child) .slide-text", { opacity: 0, y: 50 });
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% for post in site.posts %}
-        <div class="p-6 bg-white border border-gray-200 rounded-xl shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-blue-600">{{ post.date | date: "%B %d, %Y" }}</span>
-                <h3 class="text-xl font-bold text-gray-950 mt-2 hover:text-blue-600">
-                    <a href="{{ post.url }}">{{ post.title }}</a>
-                </h3>
-                <p class="text-gray-600 mt-3 text-sm leading-relaxed line-clamp-3">
-                    {{ post.excerpt | strip_html }}
-                </p>
-            </div>
-            <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
-                <span>Category: {{ post.category | default: "Research" }}</span>
-                <a href="{{ post.url }}" class="font-medium text-blue-600 hover:underline">Read Note →</a>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</section>
+        // 2. 전체 대문을 묶어둘 거대한 스크롤 타임라인 생성
+        const masterTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#cinema-container",
+                start: "top top",
+                end: "+=6000", // 스크롤 길이 설정 (넉넉하게 6000px 동안 머무름)
+                pin: true,     // 💡 중요: 애니메이션이 도는 동안 화면을 고정시킴
+                scrub: 1,      // 💡 중요: 내 마우스 스크롤 속도에 1:1 매칭
+            }
+        });
+
+        // 3. 순차적 애니메이션 체인 설계
+        masterTl
+            // --- SLIDE 1 OUT ---
+            .to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -50, duration: 0.4 })
+            .to(".slide:nth-child(1) .viewer-wrap", { scale: 4, opacity: 0, duration: 0.8 }, "<")
+            
+            // --- SLIDE 2 IN (확대되어 있던 녀석이 스크롤에 맞춰 축소되며 안착) ---
+            .to(".slide:nth-child(2)", { opacity: 1, duration: 0.1 }, "-=0.2")
+            .to(".slide:nth-child(2) .viewer-wrap", { scale: 1, duration: 0.8 }, "<")
+            .to(".slide:nth-child(2) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
+            
+            // --- SLIDE 2 OUT ---
+            .to(".slide:nth-child(2) .slide-text", { opacity: 0, y: -50, duration: 0.4 }, "+=0.4") // 머무르는 시간 부여
+            .to(".slide:nth-child(2) .viewer-wrap", { scale: 4, opacity: 0, duration: 0.8 }, "<")
+            
+            // --- SLIDE 3 IN ---
+            .to(".slide:nth-child(3)", { opacity: 1, duration: 0.1 }, "-=0.2")
+            .to(".slide:nth-child(3) .viewer-wrap", { scale: 1, duration: 0.8 }, "<")
+            .to(".slide:nth-child(3) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
+            
+            // --- SLIDE 3 OUT ---
+            .to(".slide:nth-child(3) .slide-text", { opacity: 0, y: -50, duration: 0.4 }, "+=0.4")
+            .to(".slide:nth-child(3) .viewer-wrap", { scale: 4, opacity: 0, duration: 0.8 }, "<")
+            
+            // --- SLIDE 4 IN ---
+            .to(".slide:nth-child(4)", { opacity: 1, duration: 0.1 }, "-=0.2")
+            .to(".slide:nth-child(4) .viewer-wrap", { scale: 1, duration: 0.8 }, "<")
+            .to(".slide:nth-child(4) .slide-text", { opacity: 1, y: 0, duration: 0.4 });
+    });
+</script>
