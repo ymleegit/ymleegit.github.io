@@ -88,9 +88,9 @@ title: Home
         gsap.set(".slide", { opacity: 0 });
         gsap.set(".slide:first-child", { opacity: 1 });
         
-        // 💡 [확대감 상향]: 대기 중인 다음 단백질들을 기존 1.35에서 '1.7배 거대한 상태'로 대기시킵니다.
-        gsap.set(".viewer-wrap", { scale: 1.7 });
-        gsap.set(".slide:first-child .viewer-wrap", { scale: 1 });
+        // 💡 [크기 최적화]: 전체화면에서 가득 차 보이도록 베이스 크기를 1.45배로 키우고, 최대 확대는 2.2배로 밸런스 조정
+        gsap.set(".viewer-wrap", { scale: 2.2 });
+        gsap.set(".slide:first-child .viewer-wrap", { scale: 1.45 });
         
         // 글씨 초기 위치
         gsap.set(".slide-text", { opacity: 0, y: 30 });
@@ -100,41 +100,46 @@ title: Home
             scrollTrigger: {
                 trigger: "#cinema-container",
                 start: "top top",
-                end: "+=5000", 
+                // 💡 [타이밍 최적화]: 머무는 체감 시간을 늘리기 위해 총 스크롤 연동 길이를 6500px로 확장
+                end: "+=6500", 
                 pin: true,
                 scrub: 1,
             }
         });
 
+        // 💡 [타이밍 최적화]: 대문이 열리자마자 바로 사라지지 않고, 한참 읽을 수 있게 머무는 홀드 세팅 추가
+        tl.to({}, { duration: 1.0 }) 
+
         // --- SCENE 1 -> SCENE 2 교차 (6XDG -> 4GXY) ---
-        tl.to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          // 💡 현재 단백질은 1.7배까지 시원하게 커지며 사라지고, 다음 단백질은 1.7배 크기에서 부드럽게 축소되며 들어옵니다.
-          .to(".slide:nth-child(1) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
-          .to(".slide:nth-child(1)", { opacity: 0, duration: 0.6 }, "<")
+          .to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -40, duration: 0.4 })
+          .to(".slide:nth-child(1) .viewer-wrap", { scale: 2.2, duration: 0.8 }, "-=0.1")
+          .to(".slide:nth-child(1)", { opacity: 0, duration: 0.8 }, "<")
           
-          .to(".slide:nth-child(2)", { opacity: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1, duration: 0.6 }, "<") 
-          .to(".slide:nth-child(2) .slide-text", { opacity: 1, y: 0, duration: 0.3 })
-          .to({}, { duration: 0.5 }) 
+          .to(".slide:nth-child(2)", { opacity: 1, duration: 0.8 }, "<")
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1.45, duration: 0.8 }, "<") 
+          .to(".slide:nth-child(2) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
+          // 💡 다음 슬라이드로 안착한 뒤 글씨를 편안히 읽을 수 있도록 머무는 구간을 1.5로 대폭 확대
+          .to({}, { duration: 1.5 }) 
 
         // --- SCENE 2 -> SCENE 3 교차 (4GXY -> 1A8O) ---
-          .to(".slide:nth-child(2) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
-          .to(".slide:nth-child(2)", { opacity: 0, duration: 0.6 }, "<")
+          .to(".slide:nth-child(2) .slide-text", { opacity: 0, y: -40, duration: 0.4 })
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: 2.2, duration: 0.8 }, "-=0.1")
+          .to(".slide:nth-child(2)", { opacity: 0, duration: 0.8 }, "<")
           
-          .to(".slide:nth-child(3)", { opacity: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(3) .slide-text", { opacity: 1, y: 0, duration: 0.3 })
-          .to({}, { duration: 0.5 })
+          .to(".slide:nth-child(3)", { opacity: 1, duration: 0.8 }, "<")
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: 1.45, duration: 0.8 }, "<")
+          .to(".slide:nth-child(3) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
+          .to({}, { duration: 1.5 }) 
 
         // --- SCENE 3 -> SCENE 4 교차 (1A8O -> 7AAK) ---
-          .to(".slide:nth-child(3) .slide-text", { opacity: 0, y: -40, duration: 0.3 })
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: 1.7, duration: 0.6 }, "-=0.1")
-          .to(".slide:nth-child(3)", { opacity: 0, duration: 0.6 }, "<")
+          .to(".slide:nth-child(3) .slide-text", { opacity: 0, y: -40, duration: 0.4 })
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: 2.2, duration: 0.8 }, "-=0.1")
+          .to(".slide:nth-child(3)", { opacity: 0, duration: 0.8 }, "<")
           
-          .to(".slide:nth-child(4)", { opacity: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(4) .viewer-wrap", { scale: 1, duration: 0.6 }, "<")
-          .to(".slide:nth-child(4) .slide-text", { opacity: 1, y: 0, duration: 0.3 });
+          .to(".slide:nth-child(4)", { opacity: 1, duration: 0.8 }, "<")
+          .to(".slide:nth-child(4) .viewer-wrap", { scale: 1.45, duration: 0.8 }, "<")
+          .to(".slide:nth-child(4) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
+          .to({}, { duration: 0.8 }); // 마지막 여운
     });
 
     window.addEventListener('resize', () => {
