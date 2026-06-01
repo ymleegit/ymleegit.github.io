@@ -81,9 +81,13 @@ title: Home
 <script>
     function getResponsiveScales() {
         const aspect = window.innerWidth / window.innerHeight;
-        const baseScale = aspect > 1.2 ? aspect * 1.15 : 1.4;
-        const zoomScale = baseScale * 1.65; 
-        return { baseScale, zoomScale };
+        const base = aspect > 1.2 ? aspect * 1.15 : 1.4;
+        return {
+            zoomMin: base * 0.7,     // 💡 변경: 저 멀리서 작게 대기하는 시작점 크기
+            base: base,              // 정중앙에 안착했을 때의 기본 크기
+            midIn: base * 1.25,      // 글씨 읽는 동안 은은하게 커진 중간 크기
+            zoomMax: base * 1.95     // 다음 화면으로 넘어갈 때 거대하게 탈출하는 크기
+        };
     }
 
     window.addEventListener('load', () => {
@@ -91,15 +95,14 @@ title: Home
             if (window.$3Dmol) window.$3Dmol.resize();
         }, 150);
 
-        // --- 1. 초기 배치 고도화 ---
-        gsap.set(".slide", { opacity: 0 });
-        gsap.set(".slide:first-child", { opacity: 1 });
+        // --- 1. 초기 배치 세팅 (투명도 버그 원천 차단) ---
+        gsap.set(".slide", { opacity: 1 }); 
         
-        // 백그라운드 기본 스케일 세팅
-        gsap.set(".viewer-wrap", { scale: () => getResponsiveScales().zoomScale });
-        gsap.set(".slide:first-child .viewer-wrap", { scale: () => getResponsiveScales().baseScale });
+        // 💡 변경: 대기 중인 모든 프로틴은 처음에 '작은 상태(zoomMin)'와 투명도 0으로 대기합니다.
+        gsap.set(".viewer-wrap", { opacity: 0, scale: () => getResponsiveScales().zoomMin });
+        gsap.set(".slide:first-child .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base });
         
-        // 💡 [핵심] 텍스트 박스들을 투명하게 감추지 않고, 화면 아래(100vh)에 물리적으로 대기시킵니다.
+        // 텍스트 박스 위치 대기 세팅 (불투명 고정 슬라이딩)
         gsap.set(".slide-text", { y: "100vh" });
         gsap.set(".slide:first-child .slide-text", { y: "0vh" });
 
@@ -107,51 +110,53 @@ title: Home
             scrollTrigger: {
                 trigger: "#cinema-container",
                 start: "top top",
-                end: "+=7500", // 천천히 제어할 수 있도록 스크롤 가용 범위를 넓힘
+                end: "+=7500", 
                 pin: true,
                 scrub: 1,
                 invalidateOnRefresh: true
             }
         });
 
-        // 처음 대문 진입 시 읽을 수 있는 홀드 시간
-        tl.to({}, { duration: 1.5 }) 
+        // --- SCENE 1 HOLD (대문 정지 구간) ---
+        // 1번 프로틴이 기본 크기(base)에서 중간 크기(midIn)로 서서히 확대
+        tl.to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.5, ease: "none" })
+          .to({}, { duration: 1.5 }, "<") 
 
-        // --- SCENE 1 -> SCENE 2 교차 (6XDG -> 4GXY) ---
-        // 💡 [초정밀 칼싱크 무빙] duration을 1.5초로 크게 늘려 줌인/줌아웃이 휠 속도에 맞춰 극도로 천천히 일어나게 만듭니다.
-        // 💡 1번 텍스트박스가 천천히 천장 밖(-100vh)으로 탈출할 때, 2번 텍스트박스가 바닥에서 중앙(0vh)으로 "동시에(<)" 미끄러져 올라옵니다.
-        tl.to(".slide:nth-child(1) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
-          .to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(1)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+        // --- TRANSITION 1 -> 2 (6XDG -> 4GXY) ---
+        // 💡 정밀 튜닝: 1번 글자가 올라감과 동시에 1번 프로틴은 [midIn ➡️ zoomMax]로 확대 폭발하며 사라지고,
+        // 💡 2번 프로틴은 작아지는 게 아니라 [zoomMin ➡️ base]로 '확대되며 동시에 안착'합니다. 역주행이 사라집니다!
+          .to(".slide:nth-child(1) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
+          .to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
-          .to(".slide:nth-child(2)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(2) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(2) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
           
-          // 2번 화면에 안착한 후 정지해서 읽는 시간
-          .to({}, { duration: 2.0 }) 
+        // --- SCENE 2 HOLD (2번 정지 구간) ---
+        // 💡 변경: 2번 글씨가 정지해 있는 동안에도 2번 프로틴은 멈추거나 작아지지 않고 [base ➡️ midIn]으로 연속 확대됩니다.
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.8, ease: "none" })
+          .to({}, { duration: 1.8 }, "<")
 
-        // --- SCENE 2 -> SCENE 3 교차 (4GXY -> 1A8O) ---
+        // --- TRANSITION 2 -> 3 (4GXY -> 1A8O) ---
           .to(".slide:nth-child(2) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(2)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
-          .to(".slide:nth-child(3)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(3) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(3) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
           
-          .to({}, { duration: 2.0 }) 
+        // --- SCENE 3 HOLD (3번 정지 구간) ---
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.8, ease: "none" })
+          .to({}, { duration: 1.8 }, "<")
 
-        // --- SCENE 3 -> SCENE 4 교차 (1A8O -> 7AAK) ---
+        // --- TRANSITION 3 -> 4 (1A8O -> 7AAK) ---
           .to(".slide:nth-child(3) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(3)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
-          .to(".slide:nth-child(4)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
-          .to(".slide:nth-child(4) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(4) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(4) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
           
-          .to({}, { duration: 1.2 }); 
+        // --- SCENE 4 HOLD (마지막 정지 구간) ---
+          .to(".slide:nth-child(4) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.2, ease: "none" })
+          .to({}, { duration: 1.2 }, "<"); 
     });
 
     window.addEventListener('resize', () => {
