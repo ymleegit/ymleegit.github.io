@@ -3,10 +3,10 @@ layout: default
 title: Home
 ---
 
-<section class="py-8 border-b border-gray-100">
-    <h1 class="text-4xl font-extrabold text-gray-950 tracking-tight">안녕하세요, [이름]입니다.</h1>
-    <p class="mt-6 text-lg text-gray-600 leading-relaxed max-w-3xl">
-        컴퓨터 기반의 단백질 디자인(Computational Protein Design) 및 구조 생물정보학에 관심을 두고 공부하고 있습니다. 
+<section class="py-20 border-b border-gray-100">
+    <h1 class="reveal opacity-0 text-5xl font-extrabold text-gray-950 tracking-tight">안녕하세요, [이름]입니다.</h1>
+    <p class="reveal opacity-0 mt-8 text-xl text-gray-700 leading-relaxed max-w-3xl">
+        컴퓨터 기반의 단백질 디자인 및 구조 생물정보학에 관심을 두고 공부하고 있습니다. 
         이 공간은 매주 읽는 최신 논문들을 복기하고 아카이빙하는 저만의 디지털 정원이자 포트폴리오입니다.
     </p>
 </section>
@@ -35,5 +35,23 @@ title: Home
             </div>
         </div>
         {% endfor %}
+    </div>
+</section>
+
+<section class="py-24 bg-gray-50 rounded-3xl my-16 overflow-hidden">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+        <h2 class="reveal opacity-0 text-3xl font-bold mb-16">구조 기반 단백질 디자인 시각화</h2>
+        
+        <!-- 💡 그림들이 움직일 무대 -->
+        <div class="scatter-container relative h-[400px] flex justify-center items-center">
+            
+            <!-- 💡 개별 그림들 (CSS로 흩어놓거나 JS로 흩을 예정). 초기엔 작고 투명하게 -->
+            <img src="https://via.placeholder.com/150/3B82F6/FFFFFF?text=Protein+1" alt="시각화1" 
+                 class="scatter-img opacity-0 scale-50 absolute w-32 h-32 rounded-xl shadow-lg z-10">
+            <img src="https://via.placeholder.com/150/10B981/FFFFFF?text=Protein+2" alt="시각화2" 
+                 class="scatter-img opacity-0 scale-50 absolute w-40 h-40 rounded-xl shadow-xl z-20">
+            <img src="https://via.placeholder.com/150/F59E0B/FFFFFF?text=Protein+3" alt="시각화3" 
+                 class="scatter-img opacity-0 scale-50 absolute w-36 h-36 rounded-xl shadow-lg z-10">
+        </div>
     </div>
 </section>
