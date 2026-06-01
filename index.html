@@ -79,12 +79,10 @@ title: Home
 </section>
 
 <script>
-    // 1. 창 폭(화면 비율)을 계산하여 최적의 단백질 기본 크기와 확대 크기를 리턴하는 동적 함수
     function getResponsiveScales() {
         const aspect = window.innerWidth / window.innerHeight;
-        // 가로가 넓은 모니터일수록 aspect 값이 커지므로, 그에 맞춰 베이스 scale을 유동적으로 늘려 채움
         const baseScale = aspect > 1.2 ? aspect * 1.15 : 1.4;
-        const zoomScale = baseScale * 1.55; // 베이스 대비 항상 일정 비율로 더 거대하게 확대
+        const zoomScale = baseScale * 1.65; 
         return { baseScale, zoomScale };
     }
 
@@ -93,60 +91,69 @@ title: Home
             if (window.$3Dmol) window.$3Dmol.resize();
         }, 150);
 
-        // 자바스크립트 초기 렌더링 시 동적 스케일 값 적용
+        // --- 1. 초기 배치 고도화 ---
         gsap.set(".slide", { opacity: 0 });
         gsap.set(".slide:first-child", { opacity: 1 });
         
+        // 백그라운드 기본 스케일 세팅
         gsap.set(".viewer-wrap", { scale: () => getResponsiveScales().zoomScale });
         gsap.set(".slide:first-child .viewer-wrap", { scale: () => getResponsiveScales().baseScale });
         
-        gsap.set(".slide-text", { opacity: 0, y: 30 });
-        gsap.set(".slide:first-child .slide-text", { opacity: 1, y: 0 });
+        // 💡 [핵심] 텍스트 박스들을 투명하게 감추지 않고, 화면 아래(100vh)에 물리적으로 대기시킵니다.
+        gsap.set(".slide-text", { y: "100vh" });
+        gsap.set(".slide:first-child .slide-text", { y: "0vh" });
 
-        // 메인 타임라인 세팅
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: "#cinema-container",
                 start: "top top",
-                end: "+=7000", // 텍스트 머무는 깊이감을 위해 총 스크롤 영역을 살짝 더 늘림
+                end: "+=7500", // 천천히 제어할 수 있도록 스크롤 가용 범위를 넓힘
                 pin: true,
                 scrub: 1,
-                invalidateOnRefresh: true // 💡 핵심: 브라우저 창 크기가 바뀌면 위 스케일 함수들을 자동 재계산함
+                invalidateOnRefresh: true
             }
         });
 
-        // 처음에 대문 글씨 읽을 수 있도록 정지 홀딩 타임 부여
-        tl.to({}, { duration: 1.2 }) 
+        // 처음 대문 진입 시 읽을 수 있는 홀드 시간
+        tl.to({}, { duration: 1.5 }) 
 
         // --- SCENE 1 -> SCENE 2 교차 (6XDG -> 4GXY) ---
-        // 💡 핵심 튜닝: duration을 0.8로 완벽히 일치시키고, 전부 "<"(이전 애니메이션과 동시 시작)으로 묶었습니다.
-          .to(".slide:nth-child(1) .slide-text", { opacity: 0, y: -60, duration: 0.8 })
-          .to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 0.8 }, "<")
-          .to(".slide:nth-child(2)", { opacity: 1, duration: 0.8 }, "<")
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 0.8 }, "<")
-          // 전환 완료 후 2번 글씨 스르륵 등장
-          .to(".slide:nth-child(2) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
-          // 2번 글씨가 화면에 고정되어 오래 머무는 정지 시간 (Hold)
-          .to({}, { duration: 1.8 }) 
+        // 💡 [초정밀 칼싱크 무빙] duration을 1.5초로 크게 늘려 줌인/줌아웃이 휠 속도에 맞춰 극도로 천천히 일어나게 만듭니다.
+        // 💡 1번 텍스트박스가 천천히 천장 밖(-100vh)으로 탈출할 때, 2번 텍스트박스가 바닥에서 중앙(0vh)으로 "동시에(<)" 미끄러져 올라옵니다.
+        tl.to(".slide:nth-child(1) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
+          .to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(1)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          .to(".slide:nth-child(2)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(2) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          // 2번 화면에 안착한 후 정지해서 읽는 시간
+          .to({}, { duration: 2.0 }) 
 
         // --- SCENE 2 -> SCENE 3 교차 (4GXY -> 1A8O) ---
-          .to(".slide:nth-child(2) .slide-text", { opacity: 0, y: -60, duration: 0.8 })
-          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 0.8 }, "<")
-          .to(".slide:nth-child(3)", { opacity: 1, duration: 0.8 }, "<")
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 0.8 }, "<")
-          .to(".slide:nth-child(3) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
-          .to({}, { duration: 1.8 }) 
+          .to(".slide:nth-child(2) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
+          .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(2)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          .to(".slide:nth-child(3)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(3) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          .to({}, { duration: 2.0 }) 
 
         // --- SCENE 3 -> SCENE 4 교차 (1A8O -> 7AAK) ---
-          .to(".slide:nth-child(3) .slide-text", { opacity: 0, y: -60, duration: 0.8 })
-          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 0.8 }, "<")
-          .to(".slide:nth-child(4)", { opacity: 1, duration: 0.8 }, "<")
-          .to(".slide:nth-child(4) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 0.8 }, "<")
-          .to(".slide:nth-child(4) .slide-text", { opacity: 1, y: 0, duration: 0.4 })
-          .to({}, { duration: 1.0 }); // 마지막 여운
+          .to(".slide:nth-child(3) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
+          .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().zoomScale, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(3)", { opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          .to(".slide:nth-child(4)", { opacity: 1, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(4) .viewer-wrap", { scale: () => getResponsiveScales().baseScale, duration: 1.5, ease: "power1.inOut" }, "<")
+          .to(".slide:nth-child(4) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          
+          .to({}, { duration: 1.2 }); 
     });
 
-    // 창 크기가 리사이즈될 때 3Dmol 엔진 자체 리사이즈도 실시간 매칭
     window.addEventListener('resize', () => {
         if (window.$3Dmol) window.$3Dmol.resize();
     });
