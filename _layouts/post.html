@@ -1,0 +1,36 @@
+---
+layout: default
+---
+
+<article class="max-w-3xl mx-auto px-6 py-16 text-gray-300 select-text">
+    
+    <header class="mb-12 border-b border-gray-900 pb-8">
+        <div class="flex items-center space-x-3 text-sm text-gray-500 mb-3 font-medium">
+            <span>{{ page.date | date: "%B %d, %Y" }}</span>
+            <span>•</span>
+            <span class="text-blue-400 font-semibold">{{ page.category | default: "Research" }}</span>
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight">{{ page.title }}</h1>
+    </header>
+
+    <div class="markdown-body">
+        {{ content }}
+    </div>
+
+    <div class="mt-20 pt-8 border-t border-gray-900">
+        <a href="/" class="text-sm text-blue-400 hover:text-blue-300 font-semibold tracking-tight transition-colors inline-flex items-center gap-1">
+            ← 아카이브 홈으로 돌아가기
+        </a>
+    </div>
+</article>
+
+<style>
+    .markdown-body h1 { font-size: 2rem; font-weight: 800; color: #ffffff; margin-top: 3rem; margin-bottom: 1.25rem; tracking: -0.025em; }
+    .markdown-body h2 { font-size: 1.65rem; font-weight: 700; color: #ffffff; margin-top: 2.5rem; margin-bottom: 1rem; letter-spacing: -0.025em; border-b: 1px solid #111827; padding-bottom: 0.5rem; }
+    .markdown-body h3 { font-size: 1.25rem; font-weight: 600; color: #f3f4f6; margin-top: 2rem; margin-bottom: 0.75rem; }
+    .markdown-body p { margin-bottom: 1.25rem; color: #d1d5db; line-height: 1.85; font-size: 1.05rem; text-justify: inter-character; }
+    .markdown-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .markdown-body li { margin-bottom: 0.5rem; color: #d1d5db; line-height: 1.7; }
+    .markdown-body code { background-color: #111827; color: #f3f4f6; padding: 0.2rem 0.4rem; border-radius: 0.375rem; font-size: 0.9em; font-family: monospace; border: 1px solid #1f2937; }
+    .markdown-body blockquote { border-left: 4px solid #3b82f6; padding-left: 1.25rem; color: #9ca3af; font-style: italic; margin: 2rem 0; background-color: #090d16; padding-top: 0.75rem; padding-bottom: 0.75rem; border-radius: 0 0.75rem 0.75rem 0; border-y: 1px solid #111827; border-r: 1px solid #111827; }
+</style>

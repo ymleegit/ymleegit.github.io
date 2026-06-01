@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: post  
 title: "RFdiffusion을 이용한 단백질 백본 생성 메커니즘 분석"
 category: "Protein Design"
 ---
