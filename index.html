@@ -6,8 +6,8 @@ title: Home
 <div id="cinema-container" class="relative w-full h-screen bg-black overflow-hidden select-none">
     
     <div class="slide absolute inset-0 w-full h-full flex items-center justify-center">
-        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-none">
-            <div class="viewer_3Dmoljs w-full h-full" data-pdb="6XDG" data-backgroundcolor="0x000000" data-style="cartoon:color=spectrum" data-spin="axis:y;speed:0.15"></div>
+        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-auto">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="6XDG" data-backgroundcolor="0x000000" data-style="cartoon:color=0x4b5563" data-spin="axis:y;speed:0.15"></div>
         </div>
         <div class="slide-text relative z-50 text-center max-w-2xl px-6 py-8 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 mx-4 pointer-events-auto">
             <span class="text-xs font-bold uppercase tracking-widest text-blue-400">RCSB PDB · 6XDG</span>
@@ -17,8 +17,8 @@ title: Home
     </div>
 
     <div class="slide absolute inset-0 w-full h-full flex items-center justify-center">
-        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-none">
-            <div class="viewer_3Dmoljs w-full h-full" data-pdb="4GXY" data-backgroundcolor="0x000000" data-style="sphere:radius=0.22;colorscheme=elements" data-spin="axis:y;speed:0.15"></div>
+        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-auto">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="4GXY" data-backgroundcolor="0x000000" data-style="line:color=0x4b5563" data-spin="axis:y;speed:0.15"></div>
         </div>
         <div class="slide-text relative z-50 text-center max-w-2xl px-6 py-8 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 mx-4 pointer-events-auto">
             <span class="text-xs font-bold uppercase tracking-widest text-emerald-400">RCSB PDB · 4GXY</span>
@@ -28,8 +28,8 @@ title: Home
     </div>
 
     <div class="slide absolute inset-0 w-full h-full flex items-center justify-center">
-        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-none">
-            <div class="viewer_3Dmoljs w-full h-full" data-pdb="1A8O" data-backgroundcolor="0x000000" data-style="sphere:radius=0.25;color=spectrum" data-spin="axis:x;speed:0.12"></div>
+        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-auto">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="1A8O" data-backgroundcolor="0x000000" data-style="cartoon:color=0x4b5563" data-spin="axis:x;speed:0.12"></div>
         </div>
         <div class="slide-text relative z-50 text-center max-w-2xl px-6 py-8 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 mx-4 pointer-events-auto">
             <span class="text-xs font-bold uppercase tracking-widest text-amber-400">RCSB PDB · 1A8O</span>
@@ -39,8 +39,8 @@ title: Home
     </div>
 
     <div class="slide absolute inset-0 w-full h-full flex items-center justify-center">
-        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-none">
-            <div class="viewer_3Dmoljs w-full h-full" data-pdb="7AAK" data-backgroundcolor="0x000000" data-style="cartoon:color=spectrum" data-spin="axis:y;speed:0.15"></div>
+        <div class="viewer-wrap absolute inset-0 w-full h-full pointer-events-auto">
+            <div class="viewer_3Dmoljs w-full h-full" data-pdb="7AAK" data-backgroundcolor="0x000000" data-style="line:color=0x4b5563" data-spin="axis:y;speed:0.15"></div>
         </div>
         <div class="slide-text relative z-50 text-center max-w-2xl px-6 py-8 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10 mx-4 pointer-events-auto">
             <span class="text-xs font-bold uppercase tracking-widest text-rose-400">RCSB PDB · 7AAK</span>
@@ -83,26 +83,59 @@ title: Home
         const aspect = window.innerWidth / window.innerHeight;
         const base = aspect > 1.2 ? aspect * 1.15 : 1.4;
         return {
-            zoomMin: base * 0.7,     // 💡 변경: 저 멀리서 작게 대기하는 시작점 크기
-            base: base,              // 정중앙에 안착했을 때의 기본 크기
-            midIn: base * 1.25,      // 글씨 읽는 동안 은은하게 커진 중간 크기
-            zoomMax: base * 1.95     // 다음 화면으로 넘어갈 때 거대하게 탈출하는 크기
+            zoomMin: base * 0.7,     
+            base: base,              
+            midIn: base * 1.25,      
+            zoomMax: base * 1.95     
         };
     }
 
     window.addEventListener('load', () => {
+        let viewers = [];
         setTimeout(() => {
-            if (window.$3Dmol) window.$3Dmol.resize();
-        }, 150);
+            if (window.$3Dmol && window.$3Dmol.viewers) {
+                viewers = Object.values(window.$3Dmol.viewers);
+            }
+            updateCanvasVisibility(0);
+        }, 200);
 
-        // --- 1. 초기 배치 세팅 (투명도 버그 원천 차단) ---
+        // 💡 [이벤트 차단 시스템]: 3Dmol이 스크롤 이벤트를 먹어치우지 못하게 원천 봉쇄하고 window로 우회시킵니다.
+        document.querySelectorAll('.viewer-wrap').forEach(wrap => {
+            wrap.addEventListener('wheel', (e) => {
+                e.stopImmediatePropagation(); // 3Dmol의 내부 줌 리스너로 신호가 내려가는 것을 차단
+                
+                // 브라우저와 GSAP ScrollTrigger가 정상적으로 스크롤을 인식하도록 가상 이벤트 복제 배송
+                const clonedWheel = new WheelEvent('wheel', {
+                    deltaX: e.deltaX,
+                    deltaY: e.deltaY,
+                    deltaZ: e.deltaZ,
+                    deltaMode: e.deltaMode,
+                    bubbles: true,
+                    cancelable: true
+                });
+                window.dispatchEvent(clonedWheel);
+            }, { capture: true }); // 💡 Capture 단계에서 가로채는 것이 핵심
+        });
+
+        function updateCanvasVisibility(activeIndex) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach((slide, idx) => {
+                const viewerWrap = slide.querySelector('.viewer-wrap');
+                if (idx === activeIndex) {
+                    if (viewerWrap) viewerWrap.style.visibility = "visible";
+                    if (viewers[idx]) { viewers[idx].animate(true); viewers[idx].render(); }
+                } else {
+                    if (viewerWrap) viewerWrap.style.visibility = "hidden";
+                    if (viewers[idx]) { viewers[idx].animate(false); }
+                }
+            });
+        }
+
+        // 초기 배치
         gsap.set(".slide", { opacity: 1 }); 
-        
-        // 💡 변경: 대기 중인 모든 프로틴은 처음에 '작은 상태(zoomMin)'와 투명도 0으로 대기합니다.
         gsap.set(".viewer-wrap", { opacity: 0, scale: () => getResponsiveScales().zoomMin });
         gsap.set(".slide:first-child .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base });
         
-        // 텍스트 박스 위치 대기 세팅 (불투명 고정 슬라이딩)
         gsap.set(".slide-text", { y: "100vh" });
         gsap.set(".slide:first-child .slide-text", { y: "0vh" });
 
@@ -117,44 +150,43 @@ title: Home
             }
         });
 
-        // --- SCENE 1 HOLD (대문 정지 구간) ---
-        // 1번 프로틴이 기본 크기(base)에서 중간 크기(midIn)로 서서히 확대
+        // --- SCENE 1 HOLD ---
         tl.to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.5, ease: "none" })
           .to({}, { duration: 1.5 }, "<") 
 
-        // --- TRANSITION 1 -> 2 (6XDG -> 4GXY) ---
-        // 💡 정밀 튜닝: 1번 글자가 올라감과 동시에 1번 프로틴은 [midIn ➡️ zoomMax]로 확대 폭발하며 사라지고,
-        // 💡 2번 프로틴은 작아지는 게 아니라 [zoomMin ➡️ base]로 '확대되며 동시에 안착'합니다. 역주행이 사라집니다!
+        // --- TRANSITION 1 -> 2 ---
           .to(".slide:nth-child(1) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
           .to(".slide:nth-child(1) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
           .to(".slide:nth-child(2) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(2) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          .call(() => { updateCanvasVisibility(1); })
           
-        // --- SCENE 2 HOLD (2번 정지 구간) ---
-        // 💡 변경: 2번 글씨가 정지해 있는 동안에도 2번 프로틴은 멈추거나 작아지지 않고 [base ➡️ midIn]으로 연속 확대됩니다.
+        // --- SCENE 2 HOLD ---
           .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.8, ease: "none" })
           .to({}, { duration: 1.8 }, "<")
 
-        // --- TRANSITION 2 -> 3 (4GXY -> 1A8O) ---
+        // --- TRANSITION 2 -> 3 ---
           .to(".slide:nth-child(2) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
           .to(".slide:nth-child(2) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
           .to(".slide:nth-child(3) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(3) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          .call(() => { updateCanvasVisibility(2); })
           
-        // --- SCENE 3 HOLD (3번 정지 구간) ---
+        // --- SCENE 3 HOLD ---
           .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.8, ease: "none" })
           .to({}, { duration: 1.8 }, "<")
 
-        // --- TRANSITION 3 -> 4 (1A8O -> 7AAK) ---
+        // --- TRANSITION 3 -> 4 ---
           .to(".slide:nth-child(3) .slide-text", { y: "-100vh", duration: 1.5, ease: "power1.inOut" })
           .to(".slide:nth-child(3) .viewer-wrap", { scale: () => getResponsiveScales().zoomMax, opacity: 0, duration: 1.5, ease: "power1.inOut" }, "<")
           
           .to(".slide:nth-child(4) .viewer-wrap", { opacity: 1, scale: () => getResponsiveScales().base, duration: 1.5, ease: "power1.inOut" }, "<")
           .to(".slide:nth-child(4) .slide-text", { y: "0vh", duration: 1.5, ease: "power1.inOut" }, "<")
+          .call(() => { updateCanvasVisibility(3); })
           
-        // --- SCENE 4 HOLD (마지막 정지 구간) ---
+        // --- SCENE 4 HOLD ---
           .to(".slide:nth-child(4) .viewer-wrap", { scale: () => getResponsiveScales().midIn, duration: 1.2, ease: "none" })
           .to({}, { duration: 1.2 }, "<"); 
     });
